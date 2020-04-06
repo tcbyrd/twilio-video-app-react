@@ -1,6 +1,16 @@
 import { useCallback, useEffect, useState } from 'react';
 import Video, { LocalVideoTrack, LocalAudioTrack } from 'twilio-video';
 
+function getUserPrefs() {
+  const videoConstraints = {
+    frameRate: 24,
+    width: 1280,
+    height: 720,
+    name: 'camera',
+  };
+  return { videoConstraints };
+}
+
 export function useLocalAudioTrack() {
   const [track, setTrack] = useState<LocalAudioTrack>();
 
@@ -26,14 +36,11 @@ export function useLocalAudioTrack() {
 export function useLocalVideoTrack() {
   const [track, setTrack] = useState<LocalVideoTrack>();
 
+  const { videoConstraints } = getUserPrefs();
+
   const getLocalVideoTrack = useCallback(
     () =>
-      Video.createLocalVideoTrack({
-        frameRate: 24,
-        height: 720,
-        width: 1280,
-        name: 'camera',
-      }).then(newTrack => {
+      Video.createLocalVideoTrack(videoConstraints).then(newTrack => {
         setTrack(newTrack);
         return newTrack;
       }),
